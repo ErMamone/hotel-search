@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException exception){
-		var errors = exception.getBindingResult().getFieldErrors().stream()
+	public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException exception) {
+		Map<String, Object> errors = exception.getBindingResult().getFieldErrors().stream()
 				.collect(Collectors.toMap(
 						FieldError::getField,
 						f -> f.getDefaultMessage() == null ? "invalid" : f.getDefaultMessage(),
-						(a,b) -> a));
+						(a, b) -> a));
 
 		return ResponseEntity.badRequest().body(Map.of("errors", errors));
 	}
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Map<String, String>> handleUnexpected(Exception ex) {
-			log.error("Unexpected error", ex);
+		log.error("Unexpected error", ex);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 				.body(Map.of("error", "Unexpected error"));
 	}
