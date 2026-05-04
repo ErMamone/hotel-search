@@ -1,0 +1,31 @@
+package org.meroz.application.mapper;
+
+import org.junit.jupiter.api.Test;
+import org.meroz.domain.model.HotelSearch;
+import org.meroz.domain.port.in.CountSearchesUseCase.CountResult;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class HotelSearchMapperTest {
+
+	private final HotelSearchMapper mapper = new HotelSearchMapper();
+
+	@Test
+	void shouldMapCountResultToCountResponseDTO() {
+		var search = new HotelSearch("id1", "hotelA",
+				LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 5), List.of(30, 29));
+		var result = new CountResult("id1", search, 7L);
+
+		var dto = mapper.toCountResponse(result);
+
+		assertThat(dto.searchId()).isEqualTo("id1");
+		assertThat(dto.count()).isEqualTo(7L);
+		assertThat(dto.search().hotelId()).isEqualTo("hotelA");
+		assertThat(dto.search().checkIn()).isEqualTo(LocalDate.of(2025, 1, 1));
+		assertThat(dto.search().checkOut()).isEqualTo(LocalDate.of(2025, 1, 5));
+		assertThat(dto.search().ages()).containsExactly(30, 29);
+	}
+}
