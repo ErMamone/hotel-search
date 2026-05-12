@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -44,9 +45,13 @@ class HotelSearchPersistenceAdapterTest {
 		adapter.save(search);
 
 		var found = adapter.findFirstBySearchId("id1");
-		assertThat(found).isPresent();
-		assertThat(found.get().hotelId()).isEqualTo("hotelA");
-		assertThat(found.get().ages()).containsExactly(30, 29, 1);
+		var retrieved = found.orElseThrow();
+
+		assertAll(
+				() -> assertThat(found).isPresent(),
+				() -> assertThat(retrieved.hotelId()).isEqualTo("hotelA"),
+				() -> assertThat(retrieved.ages()).containsExactly(30, 29, 1)
+		);
 	}
 
 	@Test

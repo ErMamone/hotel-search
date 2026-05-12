@@ -8,6 +8,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class CountResponseDTOTest {
 
@@ -38,8 +39,10 @@ class CountResponseDTOTest {
 				LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 5), List.of(30));
 		var dto = new CountResponseDTO("id1", payload, 5L);
 
-		assertThat(dto.searchId()).isEqualTo("id1");
-		assertThat(dto.search()).isEqualTo(payload);
-		assertThat(dto.count()).isEqualTo(5L);
+		assertAll(
+				() -> assertThat(dto.searchId()).isEqualTo("id1"),
+				() -> assertThat(dto.search()).isEqualTo(payload),
+				() -> assertThat(dto.count()).isEqualTo(5L)
+		);
 	}
 }

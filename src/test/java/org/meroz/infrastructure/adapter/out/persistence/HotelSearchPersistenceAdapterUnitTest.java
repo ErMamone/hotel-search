@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -42,13 +43,16 @@ class HotelSearchPersistenceAdapterUnitTest {
 		when(jpaRepository.findFirstBySearchId("id1")).thenReturn(Optional.of(entity));
 
 		var result = adapter.findFirstBySearchId("id1");
+		var domain = result.orElseThrow();
 
-		assertThat(result).isPresent();
-		assertThat(result.get().searchId()).isEqualTo("id1");
-		assertThat(result.get().hotelId()).isEqualTo("hotelA");
-		assertThat(result.get().checkIn()).isEqualTo(LocalDate.of(2025, 1, 1));
-		assertThat(result.get().checkOut()).isEqualTo(LocalDate.of(2025, 1, 5));
-		assertThat(result.get().ages()).containsExactly(30, 29);
+		assertAll(
+				() -> assertThat(result).isPresent(),
+				() -> assertThat(domain.searchId()).isEqualTo("id1"),
+				() -> assertThat(domain.hotelId()).isEqualTo("hotelA"),
+				() -> assertThat(domain.checkIn()).isEqualTo(LocalDate.of(2025, 1, 1)),
+				() -> assertThat(domain.checkOut()).isEqualTo(LocalDate.of(2025, 1, 5)),
+				() -> assertThat(domain.ages()).containsExactly(30, 29)
+		);
 	}
 
 	@Test

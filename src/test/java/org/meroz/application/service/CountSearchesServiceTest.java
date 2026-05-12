@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -38,9 +39,11 @@ class CountSearchesServiceTest {
 
 		var result = service.countBySearchId("id1");
 
-		assertThat(result.searchId()).isEqualTo("id1");
-		assertThat(result.search()).isEqualTo(search);
-		assertThat(result.count()).isEqualTo(5L);
+		assertAll(
+				() -> assertThat(result.searchId()).isEqualTo("id1"),
+				() -> assertThat(result.search()).isEqualTo(search),
+				() -> assertThat(result.count()).isEqualTo(5L)
+		);
 	}
 
 	@Test

@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class HotelSearchMapperTest {
 
@@ -21,11 +22,13 @@ class HotelSearchMapperTest {
 
 		var dto = mapper.toCountResponse(result);
 
-		assertThat(dto.searchId()).isEqualTo("id1");
-		assertThat(dto.count()).isEqualTo(7L);
-		assertThat(dto.search().hotelId()).isEqualTo("hotelA");
-		assertThat(dto.search().checkIn()).isEqualTo(LocalDate.of(2025, 1, 1));
-		assertThat(dto.search().checkOut()).isEqualTo(LocalDate.of(2025, 1, 5));
-		assertThat(dto.search().ages()).containsExactly(30, 29);
+		assertAll(
+				() -> assertThat(dto.searchId()).isEqualTo("id1"),
+				() -> assertThat(dto.count()).isEqualTo(7L),
+				() -> assertThat(dto.search().hotelId()).isEqualTo("hotelA"),
+				() -> assertThat(dto.search().checkIn()).isEqualTo(LocalDate.of(2025, 1, 1)),
+				() -> assertThat(dto.search().checkOut()).isEqualTo(LocalDate.of(2025, 1, 5)),
+				() -> assertThat(dto.search().ages()).containsExactly(30, 29)
+		);
 	}
 }
