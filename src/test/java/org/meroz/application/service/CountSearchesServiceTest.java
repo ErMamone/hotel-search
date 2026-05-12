@@ -2,7 +2,6 @@ package org.meroz.application.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.meroz.application.service.CountSearchesService;
 import org.meroz.domain.exception.SearchNotFoundException;
 import org.meroz.domain.model.HotelSearch;
 import org.meroz.domain.port.out.SearchRepositoryPort;

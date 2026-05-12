@@ -2,7 +2,6 @@ package org.meroz.application.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.meroz.application.service.CreateSearchService;
 import org.meroz.domain.exception.InvalidDateRangeException;
 import org.meroz.domain.model.HotelSearch;
 import org.meroz.application.port.in.CreateSearchCommand;
