@@ -13,7 +13,7 @@ class SearchResponseDTOTest {
 		assertAll(
 				() -> assertThat(dto.searchId()).isEqualTo("abc123"),
 				() -> assertThat(dto).isEqualTo(new SearchResponseDTO("abc123")),
-				() -> assertThat(dto.hashCode()).isEqualTo(new SearchResponseDTO("abc123").hashCode())
+				() -> assertThat(dto.hashCode()).hasSameHashCodeAs(new SearchResponseDTO("abc123").hashCode())
 		);
 	}
 }

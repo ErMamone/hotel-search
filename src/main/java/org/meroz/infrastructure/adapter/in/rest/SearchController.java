@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,12 +44,10 @@ public class SearchController {
 			summary = "Registra una busqueda de disponibilidad",
 			description = "Persiste la busqueda, publica un evento Kafka y devuelve el searchId deterministico"
 	)
-	@ApiResponses({
-			@ApiResponse(responseCode = "201", description = "Busqueda creada"),
-			@ApiResponse(responseCode = "400", description = "Datos invalidos",
-					content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-			@ApiResponse(responseCode = "503", description = "Fallo publicando evento")
-	})
+	@ApiResponse(responseCode = "201", description = "Busqueda creada")
+	@ApiResponse(responseCode = "400", description = "Datos invalidos",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	@ApiResponse(responseCode = "503", description = "Fallo publicando evento")
 	public SearchResponseDTO search(@Valid @RequestBody SearchRequestDTO request) {
 		var command = new CreateSearchCommand(request.hotelId(), request.checkIn(), request.checkOut(), request.ages());
 		HotelSearch result = createSearch.createSearch(command);
@@ -59,10 +56,8 @@ public class SearchController {
 
 	@GetMapping("/count")
 	@Operation(summary = "Cuenta cuantas veces se realizo una busqueda")
-	@ApiResponses({
-			@ApiResponse(responseCode = "200", description = "Conteo encontrado"),
-			@ApiResponse(responseCode = "404", description = "searchId no existe")
-	})
+	@ApiResponse(responseCode = "200", description = "Conteo encontrado")
+	@ApiResponse(responseCode = "404", description = "searchId no existe")
 	public CountResponseDTO count(@Parameter(description = "Hash SHA-256 truncado de 32 caracteres",
 			example = "591a70d443c2383e881c87925cb86fde")
 								  @RequestParam String searchId) {
