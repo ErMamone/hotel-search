@@ -1,8 +1,8 @@
 package org.meroz;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.SpringApplication;
 import org.mockito.MockedStatic;
+import org.springframework.boot.SpringApplication;
 
 import static org.mockito.Mockito.mockStatic;
 

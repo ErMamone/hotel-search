@@ -2,9 +2,9 @@ package org.meroz.application.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.meroz.application.port.in.CreateSearchCommand;
 import org.meroz.domain.exception.InvalidDateRangeException;
 import org.meroz.domain.model.HotelSearch;
-import org.meroz.application.port.in.CreateSearchCommand;
 import org.meroz.domain.port.out.SearchEventPublisherPort;
 
 import java.time.LocalDate;
@@ -13,7 +13,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 class CreateSearchServiceTest {
 

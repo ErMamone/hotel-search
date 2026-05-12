@@ -2,15 +2,15 @@ package org.meroz.infrastructure.adapter.in.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.meroz.infrastructure.adapter.in.rest.mapper.HotelSearchMapper;
+import org.meroz.application.port.in.CountSearchesUseCase;
+import org.meroz.application.port.in.CountSearchesUseCase.CountResult;
+import org.meroz.application.port.in.CreateSearchUseCase;
 import org.meroz.domain.exception.EventPublishException;
 import org.meroz.domain.exception.InvalidDateRangeException;
 import org.meroz.domain.exception.SearchNotFoundException;
 import org.meroz.domain.model.HotelSearch;
-import org.meroz.application.port.in.CountSearchesUseCase;
-import org.meroz.application.port.in.CountSearchesUseCase.CountResult;
-import org.meroz.application.port.in.CreateSearchUseCase;
 import org.meroz.infrastructure.adapter.in.rest.handler.GlobalExceptionHandler;
+import org.meroz.infrastructure.adapter.in.rest.mapper.HotelSearchMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -194,13 +194,13 @@ class SearchControllerTest {
 	@Test
 	void shouldReturn400WhenDateFormatIsInvalid() throws Exception {
 		var body = """
-			{
-			  "hotelId": "hotelA",
-			  "checkIn": "2026-05-19",
-			  "checkOut": "2026-05-26",
-			  "ages": [30, 29]
-			}
-			""";
+				{
+				  "hotelId": "hotelA",
+				  "checkIn": "2026-05-19",
+				  "checkOut": "2026-05-26",
+				  "ages": [30, 29]
+				}
+				""";
 
 		mockMvc.perform(post("/search")
 						.contentType(MediaType.APPLICATION_JSON)
