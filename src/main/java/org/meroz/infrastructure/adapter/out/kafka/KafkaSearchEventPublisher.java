@@ -1,6 +1,5 @@
 package org.meroz.infrastructure.adapter.out.kafka;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.meroz.domain.exception.EventPublishException;
 import org.meroz.domain.model.HotelSearch;

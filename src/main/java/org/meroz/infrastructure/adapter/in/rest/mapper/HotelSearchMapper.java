@@ -1,6 +1,6 @@
-package org.meroz.application.mapper;
+package org.meroz.infrastructure.adapter.in.rest.mapper;
 
-import org.meroz.domain.port.in.CountSearchesUseCase;
+import org.meroz.application.port.in.CountSearchesUseCase;
 import org.meroz.infrastructure.adapter.in.rest.dto.CountResponseDTO;
 import org.springframework.stereotype.Component;
 

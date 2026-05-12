@@ -46,10 +46,10 @@ class KafkaSearchEventPublisherTest {
 		var search = new HotelSearch("id1", "hotelA",
 				LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 5), List.of(30));
 
-		var record = new ProducerRecord<String, Object>("hotel_availability_searches", "id1", search);
+		var producerRecord = new ProducerRecord<String, Object>("hotel_availability_searches", "id1", search);
 		var metadata = new RecordMetadata(new TopicPartition("hotel_availability_searches", 0),
 				0, 0, 0, 0, 0);
-		var sendResult = new SendResult<>(record, metadata);
+		var sendResult = new SendResult<>(producerRecord, metadata);
 		when(template.send(anyString(), anyString(), any(HotelSearch.class)))
 				.thenReturn(CompletableFuture.completedFuture(sendResult));
 

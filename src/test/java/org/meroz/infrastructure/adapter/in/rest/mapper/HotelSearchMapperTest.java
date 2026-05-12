@@ -1,8 +1,8 @@
-package org.meroz.application.mapper;
+package org.meroz.infrastructure.adapter.in.rest.mapper;
 
 import org.junit.jupiter.api.Test;
 import org.meroz.domain.model.HotelSearch;
-import org.meroz.domain.port.in.CountSearchesUseCase.CountResult;
+import org.meroz.application.port.in.CountSearchesUseCase.CountResult;
 
 import java.time.LocalDate;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.meroz.domain.port.in;
+package org.meroz.application.port.in;
 
 import org.meroz.domain.model.HotelSearch;
 

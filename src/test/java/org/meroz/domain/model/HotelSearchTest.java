@@ -26,8 +26,9 @@ class HotelSearchTest {
 	void agesListShouldBeUnmodifiable() {
 		var search = new HotelSearch("id1", "hotelA",
 				LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 5), List.of(30));
+		var ages = search.ages();
 
-		assertThatThrownBy(() -> search.ages().add(99))
+		assertThatThrownBy(() -> ages.add(99))
 				.isInstanceOf(UnsupportedOperationException.class);
 	}
 }

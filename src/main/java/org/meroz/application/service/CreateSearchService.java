@@ -1,9 +1,9 @@
-package org.meroz.domain.service;
+package org.meroz.application.service;
 
+import org.meroz.application.port.in.CreateSearchCommand;
+import org.meroz.application.port.in.CreateSearchUseCase;
 import org.meroz.domain.exception.InvalidDateRangeException;
 import org.meroz.domain.model.HotelSearch;
-import org.meroz.domain.port.in.CreateSearchCommand;
-import org.meroz.domain.port.in.CreateSearchUseCase;
 import org.meroz.domain.port.out.SearchEventPublisherPort;
 
 import java.nio.charset.StandardCharsets;

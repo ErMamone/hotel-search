@@ -2,14 +2,14 @@ package org.meroz.infrastructure.adapter.in.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.meroz.application.mapper.HotelSearchMapper;
+import org.meroz.infrastructure.adapter.in.rest.mapper.HotelSearchMapper;
 import org.meroz.domain.exception.EventPublishException;
 import org.meroz.domain.exception.InvalidDateRangeException;
 import org.meroz.domain.exception.SearchNotFoundException;
 import org.meroz.domain.model.HotelSearch;
-import org.meroz.domain.port.in.CountSearchesUseCase;
-import org.meroz.domain.port.in.CountSearchesUseCase.CountResult;
-import org.meroz.domain.port.in.CreateSearchUseCase;
+import org.meroz.application.port.in.CountSearchesUseCase;
+import org.meroz.application.port.in.CountSearchesUseCase.CountResult;
+import org.meroz.application.port.in.CreateSearchUseCase;
 import org.meroz.infrastructure.adapter.in.rest.handler.GlobalExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -19,6 +19,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(SearchController.class)
 @Import({GlobalExceptionHandler.class, HotelSearchMapper.class})
 class SearchControllerTest {
+
+	private static final LocalDate CHECK_IN = LocalDate.now().plusMonths(1);
+
+	private static final LocalDate CHECK_OUT = CHECK_IN.plusDays(4);
+
+	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -48,20 +55,21 @@ class SearchControllerTest {
 	@Test
 	void shouldReturnSearchIdOnValidRequest() throws Exception {
 		var search = new HotelSearch("abc123", "hotelA",
-				LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 5), List.of(30, 29));
+				LocalDate.of(2025, 1, 1),
+				LocalDate.of(2025, 1, 5), List.of(30, 29));
 		when(createSearchUseCase.createSearch(any())).thenReturn(search);
 
 		var body = Map.of(
 				"hotelId", "hotelA",
-				"checkIn", "01/01/2025",
-				"checkOut", "05/01/2025",
+				"checkIn", CHECK_IN.format(DATE_FORMAT),
+				"checkOut", CHECK_OUT.format(DATE_FORMAT),
 				"ages", List.of(30, 29)
 		);
 
 		mockMvc.perform(post("/search")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(body)))
-				.andExpect(status().isOk())
+				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.searchId").value("abc123"));
 	}
 
@@ -69,8 +77,8 @@ class SearchControllerTest {
 	void shouldReturn400OnValidationError() throws Exception {
 		var body = Map.of(
 				"hotelId", "",
-				"checkIn", "01/01/2025",
-				"checkOut", "05/01/2025",
+				"checkIn", CHECK_IN.format(DATE_FORMAT),
+				"checkOut", CHECK_OUT.format(DATE_FORMAT),
 				"ages", List.of(30)
 		);
 
@@ -85,8 +93,8 @@ class SearchControllerTest {
 	void shouldReturn400WhenHotelIdNotAlphanumeric() throws Exception {
 		var body = Map.of(
 				"hotelId", "hotel-A!",
-				"checkIn", "01/01/2025",
-				"checkOut", "05/01/2025",
+				"checkIn", CHECK_IN.format(DATE_FORMAT),
+				"checkOut", CHECK_OUT.format(DATE_FORMAT),
 				"ages", List.of(30)
 		);
 
@@ -100,8 +108,8 @@ class SearchControllerTest {
 	void shouldReturn400WhenAgesEmpty() throws Exception {
 		var body = Map.of(
 				"hotelId", "hotelA",
-				"checkIn", "01/01/2025",
-				"checkOut", "05/01/2025",
+				"checkIn", CHECK_IN.format(DATE_FORMAT),
+				"checkOut", CHECK_OUT.format(DATE_FORMAT),
 				"ages", List.of()
 		);
 
@@ -118,8 +126,8 @@ class SearchControllerTest {
 
 		var body = Map.of(
 				"hotelId", "hotelA",
-				"checkIn", "05/01/2025",
-				"checkOut", "01/01/2025",
+				"checkIn", CHECK_IN.format(DATE_FORMAT),
+				"checkOut", CHECK_OUT.format(DATE_FORMAT),
 				"ages", List.of(30)
 		);
 
@@ -162,8 +170,8 @@ class SearchControllerTest {
 
 		var body = Map.of(
 				"hotelId", "hotelA",
-				"checkIn", "01/01/2025",
-				"checkOut", "05/01/2025",
+				"checkIn", CHECK_IN.format(DATE_FORMAT),
+				"checkOut", CHECK_OUT.format(DATE_FORMAT),
 				"ages", List.of(30)
 		);
 
@@ -181,5 +189,63 @@ class SearchControllerTest {
 		mockMvc.perform(get("/count").param("searchId", "id1"))
 				.andExpect(status().isInternalServerError())
 				.andExpect(jsonPath("$.error").value("Unexpected error"));
+	}
+
+	@Test
+	void shouldReturn400WhenDateFormatIsInvalid() throws Exception {
+		var body = """
+			{
+			  "hotelId": "hotelA",
+			  "checkIn": "2026-05-19",
+			  "checkOut": "2026-05-26",
+			  "ages": [30, 29]
+			}
+			""";
+
+		mockMvc.perform(post("/search")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(body))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.error").exists());
+	}
+
+	@Test
+	void shouldReturn400WhenBodyIsMalformedJson() throws Exception {
+		mockMvc.perform(post("/search")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("{ not json"))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.error").value("Invalid request body"));
+	}
+
+	@Test
+	void shouldReturn400WhenCheckInIsPast() throws Exception {
+		var body = Map.of(
+				"hotelId", "hotelA",
+				"checkIn", "01/01/2020",
+				"checkOut", "05/01/2020",
+				"ages", List.of(30)
+		);
+
+		mockMvc.perform(post("/search")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(body)))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.errors.checkIn").exists());
+	}
+
+	@Test
+	void shouldReturn400WhenAgeIsNegative() throws Exception {
+		var body = Map.of(
+				"hotelId", "hotelA",
+				"checkIn", CHECK_IN.format(DATE_FORMAT),
+				"checkOut", CHECK_OUT.format(DATE_FORMAT),
+				"ages", List.of(-1, 30)
+		);
+
+		mockMvc.perform(post("/search")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(body)))
+				.andExpect(status().isBadRequest());
 	}
 }

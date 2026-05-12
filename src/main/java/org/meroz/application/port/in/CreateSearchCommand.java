@@ -1,4 +1,4 @@
-package org.meroz.domain.port.in;
+package org.meroz.application.port.in;
 
 import java.time.LocalDate;
 import java.util.List;

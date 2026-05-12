@@ -26,8 +26,9 @@ class CountResponseDTOTest {
 	void payloadAgesShouldBeImmutable() {
 		var payload = new CountResponseDTO.SearchPayload("hotelA",
 				LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 5), List.of(30));
+		var ages = payload.ages();
 
-		assertThatThrownBy(() -> payload.ages().add(99))
+		assertThatThrownBy(() -> ages.add(99))
 				.isInstanceOf(UnsupportedOperationException.class);
 	}
 
