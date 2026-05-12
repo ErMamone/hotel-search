@@ -1,0 +1,47 @@
+# EditorConfig - https://editorconfig.org
+# Configuracion compartida para el proyecto hotel-search
+root = true
+
+# Reglas generales para todos los archivos
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = tab
+indent_size = 4
+max_line_length = 120
+
+# Codigo Java
+[*.java]
+ij_java_continuation_indent_size = 8
+ij_continuation_indent_size = 8
+
+# Archivos de build y descriptores XML
+[*.{xml,pom}]
+indent_size = 2
+
+# YAML (application.yml, docker-compose, github actions)
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# Properties de Spring
+[*.properties]
+indent_style = space
+indent_size = 2
+
+# JSON
+[*.json]
+indent_style = space
+indent_size = 2
+
+# Markdown - no recortar espacios al final (los dobles espacios son saltos de linea)
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = off
+
+# Dockerfile
+[Dockerfile]
+indent_style = space
+indent_size = 2
