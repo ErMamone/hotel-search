@@ -1,6 +1,6 @@
 # Hotel Search Service
 
-Servicio REST para búsquedas de disponibilidad hotelera. 
+Servicio REST para búsquedas de disponibilidad hotelera.
 Recibe búsquedas vía HTTP, las publica en Kafka, las persiste vía consumer en PostgreSQL, y permite contar búsquedas equivalentes.
 
 Spring Boot 3.4 · Java 21 · Kafka · PostgreSQL 16 · Arquitectura hexagonal.
@@ -65,11 +65,11 @@ curl -X POST http://localhost:8080/search \
   }'
 ```
 
-**Response 200:**
+**Response 201:**
 
 ```json
 {
-  "searchId": "a3f5b8c9d2e7..."
+	"searchId": "a3f5b8c9d2e7..."
 }
 ```
 
@@ -87,14 +87,14 @@ curl "http://localhost:8080/count?searchId=a3f5b8c9d2e7..."
 
 ```json
 {
-  "searchId": "a3f5b8c9d2e7...",
-  "search": {
-    "hotelId": "1234aBc",
-    "checkIn": "29/12/2025",
-    "checkOut": "31/12/2025",
-    "ages": [30, 29, 1, 3]
-  },
-  "count": 1
+	"searchId": "a3f5b8c9d2e7...",
+	"search": {
+		"hotelId": "1234aBc",
+		"checkIn": "29/12/2025",
+		"checkOut": "31/12/2025",
+	    "ages": [30, 29, 1, 3]
+	},
+	"count": 1
 }
 ```
 
@@ -104,7 +104,7 @@ curl "http://localhost:8080/count?searchId=a3f5b8c9d2e7..."
 
 | Caso                              | Status | Body                                                    |
 |-----------------------------------|--------|---------------------------------------------------------|
-| Payload válido                    | 200    | `{"searchId": "..."}`                                   |
+| Payload válido                    | 201    | `{"searchId": "..."}`                                   |
 | `hotelId` vacío o no alfanumérico | 400    | `{"errors": {"hotelId": "..."}}`                        |
 | `ages` vacío o null               | 400    | `{"errors": {"ages": "..."}}`                           |
 | `checkIn` >= `checkOut`           | 400    | `{"error": "checkIn must be before checkOut"}`          |
@@ -173,17 +173,17 @@ mvn clean verify -Dtest='!HotelSearchPersistenceAdapterTest,!KafkaSearchFlowInte
 Hexagonal estricta (ports & adapters). El dominio no depende de Spring, JPA, Kafka, ni REST. La adaptación se realiza en `infrastructure/adapter/*`.
 
 - **`domain/`** — Núcleo: modelos, puertos, servicios. Sin dependencias de frameworks.
-    - `model/` — Records inmutables.
-    - `port/in/` — Use cases.
-    - `port/out/` — Repository, EventPublisher.
-    - `service/` — Implementaciones de use cases (POJOs).
-    - `exception/` — Excepciones de dominio.
+	- `model/` — Records inmutables.
+	- `port/in/` — Use cases.
+	- `port/out/` — Repository, EventPublisher.
+	- `service/` — Implementaciones de use cases (POJOs).
+	- `exception/` — Excepciones de dominio.
 - **`application/mapper/`** — Mapeo Domain ↔ DTO REST.
 - **`infrastructure/`** — Adaptadores y configuración Spring.
-    - `adapter/in/rest/` — Controller, DTOs, exception handler.
-    - `adapter/out/kafka/` — Publisher, Consumer.
-    - `adapter/out/persistence/` — JPA Entity, Repository, Adapter.
-    - `config/` — Spring configs, properties tipadas.
+	- `adapter/in/rest/` — Controller, DTOs, exception handler.
+	- `adapter/out/kafka/` — Publisher, Consumer.
+	- `adapter/out/persistence/` — JPA Entity, Repository, Adapter.
+	- `config/` — Spring configs, properties tipadas.
 
 ### Decisiones técnicas
 
